@@ -1,13 +1,14 @@
 # REST - IR Server
 
-A REST server in python with Swagger for storing pronto hex codes to avoid code duplication between Apple and Samsung Devices.
+A REST server in Flask/Python with Swagger for storing pronto hex codes to avoid code duplication between Apple and Samsung Devices.
 
 To start up:
+```text
 docker-compose build
 docker-compose up
-
-http://localhost:5000 - alter database
-http://localhost:5000/api/ui - to access swagger interface
+```
+* http://localhost:5000 - alter database
+* http://localhost:5000/api/ui - to access swagger interface
 
 ## Usage
 
