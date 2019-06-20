@@ -1,0 +1,202 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger Rest Article
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /api
+
+# Paths supported by the server application
+paths:
+  /devices:
+    get:
+      operationId: devices.read_all
+      tags:
+        - Devices
+      summary: Read the entire set of devices, sorted by manufacturer
+      description: Read the entire set of devices, sorted by manufacturer
+      responses:
+        200:
+          description: Successfully read devices set operation
+          schema:
+            type: array
+            items:
+              properties:
+                device_id:
+                  type: string
+                  description: Id of the device
+                manufacturer:
+                  type: string
+                  description: Manufacturer
+                model_num:
+                  type: string
+                  description: Model Number
+                device_type:
+                  type: string
+                  description: Type of Device (MediaDevice, TV or SmartTV)
+                remote_config:
+                  type: string
+                  description: Mapping to the Remote Config that corresponds to this remote
+                timestamp:
+                  type: string
+                  description: Creation/Update timestamp of the device
+    post:
+      operationId: devices.create
+      tags:
+        - Devices
+      summary: Create a device
+      description: Create a new device
+      parameters:
+        - name: device
+          in: body
+          description: Device to create
+          required: True
+          schema:
+            type: object
+            properties:
+              manufacturer:
+                type: string
+                description: Manufacturer of device to create
+              model_num:
+                type: string
+                description: Model Number of device to create
+              device_type:
+                type: string
+                description: Type of Device (MediaDevice, TV or SmartTV)
+              remote_config:
+                  type: string
+                  description: Mapping to the Remote Config that corresponds to this remote
+      responses:
+        201:
+          description: Successfully created device
+          schema:
+            properties:
+              device_id:
+                type: string
+                description: Id of the device
+              manufacturer:
+                type: string
+                description: Manufacturer of the device
+              model_num:
+                type: string
+                description: Model Number of the device
+              device_type:
+                type: string
+                description: Type of Device (MediaDevice, TV or SmartTV)
+              remote_config:
+                type: string
+                description: Mapping to the Remote Config that corresponds to this remote
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the device record
+
+  /devices/{device_id}:
+    get:
+      operationId: devices.read_one
+      tags:
+        - Devices
+      summary: Read one device
+      description: Read one device
+      parameters:
+        - name: device_id
+          in: path
+          description: Id of the device to get
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read device from devices data operation
+          schema:
+            type: object
+            properties:
+              device_id:
+                type: string
+                description: Id of the device
+              manufacturer:
+                type: string
+                description: Manufacturer of the device
+              model_num:
+                type: string
+                description: Model Number of the device
+              device_type:
+                type: string
+                description: Type of Device (MediaDevice, TV or SmartTV)
+              remote_config:
+                type: string
+                description: Mapping to the Remote Config that corresponds to this remote
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the device record
+
+    put:
+      operationId: devices.update
+      tags:
+        - Devices
+      summary: Update a device
+      description: Update a device
+      parameters:
+        - name: device_id
+          in: path
+          description: Id the device to update
+          type: integer
+          required: True
+        - name: device
+          in: body
+          schema:
+            type: object
+            properties:
+              manufacturer:
+                type: string
+                description: Manufacturer of the device
+              model_num:
+                type: string
+                description: Model Number of the device
+              device_type:
+                type: string
+                description: Type of Device (MediaDevice, TV or SmartTV)
+              remote_config:
+                type: string
+                description: Mapping to the Remote Config that corresponds to this remote
+      responses:
+        200:
+          description: Successfully updated device
+          schema:
+            properties:
+              device_id:
+                type: string
+                description: Id of the device in the database
+              manufacturer:
+                  type: string
+                  description: Manufacturer of the device
+              model_num:
+                  type: string
+                  description: Model Number of the device
+              device_type:
+                  type: string
+                  description: Type of Device (MediaDevice, TV or SmartTV)
+              remote_config:
+                  type: string
+                  description: Mapping to the Remote Config that corresponds to this remote
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the device record
+
+    delete:
+      operationId: devices.delete
+      tags:
+        - Devices
+      summary: Delete a device from the devices list
+      description: Delete a device
+      parameters:
+        - name: device_id
+          in: path
+          type: integer
+          description: Id of the device to delete
+          required: true
+      responses:
+        200:
+          description: Successfully deleted a device

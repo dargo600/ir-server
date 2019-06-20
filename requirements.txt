@@ -1,0 +1,8 @@
+connexion[swagger-ui]
+flask
+Flask-SQLAlchemy
+flask-marshmallow
+marshmallow-sqlalchemy
+marshmallow
+markdown==2.6.11
+
