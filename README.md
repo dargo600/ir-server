@@ -1,6 +1,7 @@
 # REST - IR Server
 
-A REST server in Flask/Python with Swagger for storing pronto hex codes to avoid code duplication between Apple and Samsung Devices.
+A REST server in Flask/Python with Swagger for storing pronto hex codes to
+avoid code duplication between Apple and Samsung Devices.
 
 To start up:
 ```text
@@ -62,7 +63,9 @@ Subsequent definitions will only detail the expected value of the data field"
 - `"device_type":string` The type of device, eg: tv, smartTV, mediaDevice
 - `"remote_config":string` String to map to /remoteconfig
 
-If a device with the given model and manufacturer already exists it will not be added.  The primary key consists of model_num and Manufacturer as model_num may theoretically not be unique.
+If a device with the given model and manufacturer already exists it will not
+be added.  The primary key consists of model_num and Manufacturer as
+model_num may theoretically not be unique.
 
 - `201 Created` on success
 
