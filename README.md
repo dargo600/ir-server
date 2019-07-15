@@ -5,6 +5,7 @@ avoid code duplication between Apple and Samsung Devices.
 
 To start up:
 ```text
+cd src
 docker-compose build
 docker-compose up
 ```
