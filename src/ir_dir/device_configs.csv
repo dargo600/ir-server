@@ -1,0 +1,4 @@
+model_num,      manufacturer,  device_type, remote_config
+v2,             apple,         MediaDevice, appleConfig1
+streamstick,    roku,          MediaDevice, rokuConfig1
+ln46C630k1fkxzc,samsung,       tv,          samsungConfig1

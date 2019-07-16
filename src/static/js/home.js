@@ -89,7 +89,7 @@ ns.view = (function() {
         $model_num = $('#model_num'),
         $manufacturer = $('#manufacturer'),
         $device_type = $('#device_type'),
-        $remote_config = $('#remote_config');
+        $device_config_id = $('#device_config_id');
 
     // return the API
     return {
@@ -97,7 +97,7 @@ ns.view = (function() {
             $device_id.val('');
             $manufacturer.val('');
             $device_type.val('');
-            $remote_config.val('');
+            $device_config_id.val('');
             $model_num.val('').focus();
         },
         update_editor: function(device) {
@@ -105,7 +105,7 @@ ns.view = (function() {
             $model_num.val(device.model_num).focus();
             $manufacturer.val(device.manufacturer);
             $device_type.val(device.device_type);
-            $remote_config.val(device.remote_config);
+            $device_config_id.val(device.device_config_id);
         },
         build_table: function(devices) {
             let rows = ''
@@ -120,7 +120,7 @@ ns.view = (function() {
                         <td class="model_num">${devices[i].model_num}</td>
                         <td class="manufacturer">${devices[i].manufacturer}</td>
                         <td class="device_type">${devices[i].device_type}</td>
-                        <td class="remote_config">${devices[i].remote_config}</td>
+                        <td class="device_config_id">${devices[i].device_config_id}</td>
                         <td>${devices[i].timestamp}</td>
                     </tr>`;
                 }
@@ -148,7 +148,7 @@ ns.controller = (function(m, v) {
         $device_id = $('#device_id'),
         $manufacturer = $('#manufacturer'),
         $device_type = $('#device_type'),
-        $remote_config = $('#remote_config'),
+        $device_config_id = $('#device_config_id'),
         $model_num = $('#model_num');
 
     // Get the data from the model after the controller is done initializing
@@ -157,25 +157,25 @@ ns.controller = (function(m, v) {
     }, 100)
 
     // Validate input
-    function validate(model_num, manufacturer, device_type, remote_config) {
-        return model_num !== "" && manufacturer !== "" && device_type !== "" && remote_config !== "";
+    function validate(model_num, manufacturer, device_type, device_config_id) {
+        return model_num !== "" && manufacturer !== "" && device_type !== "" && device_config_id !== "";
     }
 
     // Create our event handlers
     $('#create').click(function(e) {
         let manufacturer = $manufacturer.val(),
             device_type = $device_type.val(),
-            remote_config = $remote_config.val(),
+            device_config_id = $device_config_id.val(),
             model_num = $model_num.val();
 
         e.preventDefault();
 
-        if (validate(manufacturer, model_num, device_type, remote_config)) {
+        if (validate(manufacturer, model_num, device_type, device_config_id)) {
             model.create({
                 'model_num': model_num,
                 'manufacturer': manufacturer,
                 'device_type': device_type,
-                'remote_config': remote_config,
+                'device_config_id': device_config_id,
             })
         } else {
             alert('Problem with Manufacturer, Model, Device Type or Remote Configuration input');
@@ -185,22 +185,22 @@ ns.controller = (function(m, v) {
     $('#update').click(function(e) {
         let device_id = $device_id.val(),
             manufacturer = $manufacturer.val(),
-            remote_config = $remote_config.val(),
+            device_config_id = $device_config_id.val(),
             device_type = $device_type.val(),
             model_num = $model_num.val();
 
         e.preventDefault();
 
-        if (validate(manufacturer, model_num, device_type, remote_config)) {
+        if (validate(manufacturer, model_num, device_type, device_config_id)) {
             model.update({
                 device_id: device_id,
                 model_num: model_num,
                 manufacturer: manufacturer,
                 device_type: device_type,
-                remote_config: remote_config,
+                device_config_id: device_config_id,
             })
         } else {
-            alert('Problem with Manufacturer, Model, Device Type or Remote Configuration input');
+            alert('Problem with Manufacturer, Model, Device Type or Device Configurqation input');
         }
         e.preventDefault();
     });
@@ -213,7 +213,7 @@ ns.controller = (function(m, v) {
         if (validate('placeholder', manufacturer)) {
             model.delete(device_id)
         } else {
-            alert('Problem with Manufacturer, Model, Device Type or Remote Configuration input');
+            alert('Problem with Manufacturer, Model, Device Type or Device COnfiguration input');
         }
         e.preventDefault();
     });
@@ -227,7 +227,7 @@ ns.controller = (function(m, v) {
             device_id,
             manufacturer,
             device_type,
-            remote_config,
+            device_config_id,
             model_num;
 
         device_id = $target
@@ -244,9 +244,9 @@ ns.controller = (function(m, v) {
             .find('td.manufacturer')
             .text();
 
-        remote_config = $target
+        device_config_id = $target
             .parent()
-            .find('td.remote_config')
+            .find('td.device_config_id')
             .text();
 
         device_type = $target
@@ -258,7 +258,7 @@ ns.controller = (function(m, v) {
             device_id: device_id,
             model_num: model_num,
             manufacturer: manufacturer,
-            remote_config: remote_config,
+            device_config_id: device_config_id,
             device_type:device_type,
         });
     });

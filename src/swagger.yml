@@ -27,7 +27,7 @@ paths:
             items:
               properties:
                 device_id:
-                  type: string
+                  type: integer
                   description: Id of the device
                 manufacturer:
                   type: string
@@ -38,8 +38,8 @@ paths:
                 device_type:
                   type: string
                   description: Type of Device (MediaDevice, TV or SmartTV)
-                remote_config:
-                  type: string
+                device_config_id:
+                  type: integer
                   description: Mapping to the Remote Config that corresponds to this remote
                 timestamp:
                   type: string
@@ -58,6 +58,9 @@ paths:
           schema:
             type: object
             properties:
+              device_id:
+                type: integer
+                description: Id of the device
               manufacturer:
                 type: string
                 description: Manufacturer of device to create
@@ -67,8 +70,8 @@ paths:
               device_type:
                 type: string
                 description: Type of Device (MediaDevice, TV or SmartTV)
-              remote_config:
-                  type: string
+              device_config_id:
+                  type: integer
                   description: Mapping to the Remote Config that corresponds to this remote
       responses:
         201:
@@ -76,7 +79,7 @@ paths:
           schema:
             properties:
               device_id:
-                type: string
+                type: integer
                 description: Id of the device
               manufacturer:
                 type: string
@@ -87,8 +90,8 @@ paths:
               device_type:
                 type: string
                 description: Type of Device (MediaDevice, TV or SmartTV)
-              remote_config:
-                type: string
+              device_config_id:
+                type: integer
                 description: Mapping to the Remote Config that corresponds to this remote
               timestamp:
                 type: string
@@ -114,7 +117,7 @@ paths:
             type: object
             properties:
               device_id:
-                type: string
+                type: integer
                 description: Id of the device
               manufacturer:
                 type: string
@@ -125,8 +128,8 @@ paths:
               device_type:
                 type: string
                 description: Type of Device (MediaDevice, TV or SmartTV)
-              remote_config:
-                type: string
+              device_config_id:
+                type: integer
                 description: Mapping to the Remote Config that corresponds to this remote
               timestamp:
                 type: string
@@ -158,8 +161,8 @@ paths:
               device_type:
                 type: string
                 description: Type of Device (MediaDevice, TV or SmartTV)
-              remote_config:
-                type: string
+              device_config_id:
+                type: integer
                 description: Mapping to the Remote Config that corresponds to this remote
       responses:
         200:
@@ -167,7 +170,7 @@ paths:
           schema:
             properties:
               device_id:
-                type: string
+                type: integer
                 description: Id of the device in the database
               manufacturer:
                   type: string
@@ -178,8 +181,8 @@ paths:
               device_type:
                   type: string
                   description: Type of Device (MediaDevice, TV or SmartTV)
-              remote_config:
-                  type: string
+              device_config_id:
+                  type: integer
                   description: Mapping to the Remote Config that corresponds to this remote
               timestamp:
                 type: string
@@ -200,3 +203,138 @@ paths:
       responses:
         200:
           description: Successfully deleted a device
+
+  /device_configs:
+    get:
+      operationId: device_configs.read_all
+      tags:
+        - device_configs
+      summary: Read the entire set of device configurations, sorted by manufacturer
+      description: Read the entire set of devic configurationss, sorted by manufacturer
+      responses:
+        200:
+          description: Successfully read device configurations set operation
+          schema:
+            type: array
+            items:
+              properties:
+                device_config_id:
+                  type: integer
+                  description: Id of the device config
+                device_config_name:
+                  type: string
+                  description: Description of Configuration
+                timestamp:
+                  type: string
+                  description: Creation/Update timestamp of the device config
+    post:
+      operationId: device_configs.create
+      tags:
+        - device_configs
+      summary: Create a device configuration
+      description: Create a new device configuration
+      parameters:
+        - name: device configuration
+          in: body
+          description: Device configuration to create
+          required: True
+          schema:
+            type: object
+            properties:
+              device_config_name:
+                type: string
+                description: name of Device Configuration to create
+      responses:
+        201:
+          description: Successfully created device config
+          schema:
+            properties:
+              device_config_id:
+                type: integer
+                description: Device Configuration Id of the device
+              device_config_name:
+                type: string
+                description: Name of Device Configuration
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the device config record
+
+  /device_configs/{device_config_id}:
+    get:
+      operationId: device_configs.read_one
+      tags:
+        - device_configs
+      summary: Read one device config
+      description: Read one device config
+      parameters:
+        - name: device_config_id
+          in: path
+          description: Id of the device configuration to get
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read device config from device configs data operation
+          schema:
+            type: object
+            properties:
+              device_config_id:
+                type: string
+                description: Id of the device config
+              device_config_name:
+                type: string
+                description: Name of the device config
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the device config record
+
+    put:
+      operationId: device_configs.update
+      tags:
+        - device_configs
+      summary: Update a device configuration
+      description: Update a device configuration
+      parameters:
+        - name: device_config_id
+          in: path
+          description: Id the device config to update
+          type: integer
+          required: True
+        - name: device_config
+          in: body
+          schema:
+            type: object
+            properties:
+              device_config_name:
+                type: string
+                description: Name of the device configuration
+      responses:
+        200:
+          description: Successfully updated device
+          schema:
+            properties:
+              device_config_id:
+                type: integer
+                description: Id of the device config in the database
+              device_config_name:
+                  type: string
+                  description: Name of the device configuration
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the device config record
+
+    delete:
+      operationId: device_configs.delete
+      tags:
+        - Devices
+      summary: Delete a device config from the device_configs list
+      description: Delete a device_config
+      parameters:
+        - name: device_config_id
+          in: path
+          type: integer
+          description: Id of the device config to delete
+          required: true
+      responses:
+        200:
+          description: Successfully deleted a device config

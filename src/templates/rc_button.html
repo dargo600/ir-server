@@ -1,0 +1,90 @@
+{% extends "parent.html" %}
+
+{% block title %}Notes{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/notes.css">
+{% endblock %}
+
+{% block page_name %}Person Note Create/Update/Delete Page{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <input id="url_person_id" type="hidden" value="{{ person_id }}" />
+        <input id="url_note_id" type="hidden" value="{{ note_id }}" />
+        <div class="section display">
+            <div>
+                <span>Device ID:</span>
+                <span id="device_id"></span>
+            </div>
+            <div>
+                <span>Manufacturer:</span>
+                <span id="manufacturer"></span>
+            </div>
+            <div>
+                <span>Model #:</span>
+                <span id="model_no"></span>
+            </div>
+            <div>
+                <span>Device Type:</span>
+                <span id="device_type"></span>
+            </div>
+            <div>
+                <span>Timestamp:</span>
+                <span id="timestamp"></span>
+            </div>
+        </div>
+        <div class="section editor">
+            <div>
+                <span>Configuration ID:</span>
+                <span id="config_id"></span>
+            </div>
+            <label for="rc_button_type">
+                <input id="rc_button_type" type="text" maxlength="200"/>
+            </label>
+            <label for="rc_ir_code">
+                <input id="rc_ir_code" type="text" maxlength="200"/>
+            </label>
+            <br />
+            <button id="create">Create</button>
+            <button id="update">Update</button>
+            <button id="delete">Delete</button>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+    <div class="notes">
+        <table>
+            <caption>Notes</caption>
+            <thead>
+                <tr>
+                    <th class="timestamp">Update Time</th>
+                    <th class="content">Content</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="error">
+    </div>
+
+{% raw %}
+<script id="notes-table-template" type="text/x-handlebars-template">
+    <tbody>
+        {{#each notes}}
+        <tr data-note_id="{{note_id}}" data-content="{{content}}">
+            <td class="timestamp">{{formatTimestamp timestamp}}</td>
+            <td class="content">{{content}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</script>
+{% endraw %}
+
+{% endblock %}
+
+{% block javascript %}
+{{ super() }}
+<script src="/static/js/notes.js"></script>
+{% endblock %}

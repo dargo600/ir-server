@@ -7,6 +7,7 @@ from flask import make_response, abort
 from config import db
 from models import Device, DeviceSchema
 
+
 def read_all():
     """
     This function responds to a request for /api/devices
