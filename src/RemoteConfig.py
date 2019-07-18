@@ -34,7 +34,7 @@ class RemoteConfiguration:
         self.rc_buttons = []
         self.device_configs = []
         self.remote_control_configs = {}
-        self.rc_config_index = 1
+        self.rc_config_index = 0
 
     def get_rc_buttons(self):
         return self.rc_buttons
@@ -50,52 +50,59 @@ class RemoteConfiguration:
         for csv_file in csv_files:
             self.process_csv(csv_file)
 
-    @staticmethod
-    def get_csv_files(ir_config_dir):
+    def get_csv_files(self, ir_config_dir):
         csv_files = [];
         for root, dir, files in os.walk(ir_config_dir, topdown=False):
             for name in files:
-                file_extension = name.split('.')[1]
-                if file_extension == 'csv':
+                if self.is_csv_file(name):
                     csv_files.append(root + "/" + name)
         return csv_files
 
+    @staticmethod
+    def is_csv_file(name):
+        return name.split('.')[1] == "csv"
+
     def process_csv(self, rel_csv_file):
         with open(rel_csv_file) as csv_file:
-            config_type = "undefined"
-            header_parsed = False
-            config_index = 0
             csv_reader = csv.reader(csv_file, delimiter=',')
+            expected_line_type = "undefined"
             for row in csv_reader:
-                line_type = self.parse_line(row, config_type, config_index)
+                line_type,config_type = self.parse_line(row, rel_csv_file, expected_line_type)
                 if line_type == "comment":
                     continue
-                config_type = "bad_type" if line_type == "bad_header" else line_type
-                if config_type == "bad_type":
+                if config_type == "unrecognized_type":
                     break
-                if not header_parsed:
-                    if config_type == "button":
-                        config_index = self.generate_config_index(rel_csv_file)
-                    header_parsed = True
+                expected_line_type = config_type
 
-    def parse_line(self, row, config_type, config_index):
+    def parse_line(self, row, rel_csv_file, expected_line_type):
         if row[0].startswith("#"):
-            return "comment"
-        if config_type == "undefined":
-            header_column = row[0]
-            if header_column != "button" and header_column != "model_num":
-                print(f'Unrecognized column {header_column}')
-                return "bad_header"
-            return header_column
-        if config_type == "button":
-            self.parse_button_line(config_index, row)
+            return "comment", "undefined"
+        if expected_line_type == "undefined":
+            return "header", self.parse_header(row, rel_csv_file)
+        if expected_line_type == "button":
+            self.parse_button_line(row)
         else:
             self.parse_device_line(row)
-        return config_type
+        return expected_line_type,expected_line_type
 
-    def parse_button_line(self, config_index, row):
+    def parse_header(self, row, rel_csv_file):
+        header_column = row[0]
+        if header_column != "button" and header_column != "model_num":
+            print(f'Unrecognized column {header_column}')
+            return "unrecognized_type"
+        if header_column == "button":
+            self.update_config_index(rel_csv_file)
+        return header_column
+
+    def update_config_index(self, rel_csv_file):
+        self.rc_config_index += 1
+        config_name = rel_csv_file.split('/')[-1]
+        config_name = config_name.split('.')[0]
+        self.remote_control_configs[config_name] = self.rc_config_index
+
+    def parse_button_line(self, row):
         button_type, pronto_code = row
-        button = ParsedRCButton(config_index, button_type,
+        button = ParsedRCButton(self.rc_config_index, button_type,
                                 pronto_code.strip())
         self.rc_buttons.append(button)
 
@@ -106,12 +113,4 @@ class RemoteConfiguration:
                                     device_type.strip(),
                                     remote_config.strip())
         self.device_configs.append(device)
-
-    def generate_config_index(self, rel_csv_file):
-        config_idx = self.rc_config_index
-        config_name = rel_csv_file.split('/')[-1]
-        config_name = config_name.split('.')[0]
-        self.remote_control_configs[config_name] = config_idx
-        self.rc_config_index += 1
-        return config_idx
 

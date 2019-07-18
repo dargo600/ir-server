@@ -39,10 +39,7 @@ def read_one(device_id):
         data = device_schema.dump(device).data
         return data
     else:
-        abort(
-            404,
-            "Device not found for Id: {device_id}".format(device_id=device_id),
-        )
+        abort(404, f"Device not found for Id: {device_id}")
 
 
 def create(device):
@@ -75,12 +72,7 @@ def create(device):
 
         return data, 201
     else:
-        abort(
-            409,
-            "Device {model_num} {manufacturer} exists already".format(
-                model_num=model_num, manufacturer=manufacturer
-            ),
-        )
+        abort(409, f"Device {model_num} {manufacturer} exists already")
 
 
 def update(device_id, device):
@@ -109,22 +101,12 @@ def update(device_id, device):
 
     # Are we trying to find a person that does not exist?
     if update_device is None:
-        abort(
-            404,
-            "Device not found for Id: {device_id}".format(device_id=device_id),
-        )
+        abort(404, f"Device not found for Id: {device_id}")
     # Would our update create a duplicate of another person already existing?
     elif (
         existing_device is not None and existing_device.device_id != device_id
     ):
-        abort(
-            409,
-            "Device {model_num} {manufacturer} exists already".format(
-                model_num=model_num, manufacturer=manufacturer
-            ),
-        )
-
-    # Otherwise go ahead and update!
+        abort(409, f"Device {model_num} {manufacturer} exists already")
     else:
 
         # turn the passed in person into a db object
@@ -153,16 +135,9 @@ def delete(device_id):
     # Get the device requested
     device = Device.query.filter(Device.device_id == device_id).one_or_none()
 
-    # Did we find a person?
     if device is not None:
         db.session.delete(device)
         db.session.commit()
-        return make_response(
-            "Device {device_id} deleted".format(device_id=device_id), 200
-        )
-    # Otherwise, nope, didn't find that person
+        return make_response(f"Device {device_id} deleted", 200)
     else:
-        abort(
-            404,
-            "Device not found for Id: {device_id}".format(device_id=device_id),
-        )
+        abort(404, f"Device not found for Id: {device_id}")

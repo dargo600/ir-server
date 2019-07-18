@@ -30,19 +30,17 @@ def read_one(device_config_id):
     :param device_config_id:   Id of device to find
     :return:            device matching id
     """
-    # Get the person requested
-    device_config = DeviceConfig.query.filter(DeviceConfig.device_config_id == device_config_id).one_or_none()
-
+    device_config =\
+        DeviceConfig.query\
+                    .filter(DeviceConfig.device_config_id == device_config_id)\
+                    .one_or_none()
     if device_config is not None:
         # Serialize the data for the response
         device_config_schema = DeviceConfigSchema()
         data = device_config_schema.dump(device_config).data
         return data
     else:
-        abort(
-            404,
-            "Device Config not found for Id: {device_config_id}".format(device_config_id=device_config_id),
-        )
+        abort(404, f"Device Config not found for Id: {device_config_id}")
 
 
 def create(device_config):
@@ -55,8 +53,10 @@ def create(device_config):
     device_config_name = device_config.get("device_config_name")
 
     existing_device = (
-        DeviceConfig.query.filter(DeviceConfig.device_config_name == device_config_name)
-        .one_or_none()
+        DeviceConfig
+            .query
+            .filter(DeviceConfig.device_config_name == device_config_name)
+            .one_or_none()
     )
 
     if existing_device is None:
@@ -73,12 +73,7 @@ def create(device_config):
 
         return data, 201
     else:
-        abort(
-            409,
-            "DeviceConfig {device_config_name} exists already".format(
-                device_config_name=device_config_name
-            ),
-        )
+        abort(409, f"DeviceConfig {device_config_name} exists already")
 
 
 def update(device_config_id, device_config):
@@ -99,28 +94,19 @@ def update(device_config_id, device_config):
     device_config_name = device_config.get("device_config_name")
 
     existing_device_config = (
-        DeviceConfig.query.filter(DeviceConfig.device_config_name, device_config_name)
-        .one_or_none()
+        DeviceConfig
+            .query
+            .filter(DeviceConfig.device_config_name, device_config_name)
+            .one_or_none()
     )
 
     # Are we trying to find a device_config that does not exist?
     if update_device_config is None:
-        abort(
-            404,
-            "Device Config not found for Id: {device_config_id}".format(device_config_id=device_config_id),
-        )
-    # Would our update create a duplicate of another device_config already existing?
+        abort(404, f"Device Config not found for Id: {device_config_id}")
     elif (
         existing_device_config is not None and existing_device_config.device_config_id != device_config_id
     ):
-        abort(
-            409,
-            "Device {device_config_name} exists already".format(
-                device_config_name=device_config_name
-            ),
-        )
-
-    # Otherwise go ahead and update!
+        abort(409, f"Device {device_config_name} exists already")
     else:
 
         # turn the passed in person into a db object
@@ -153,12 +139,6 @@ def delete(device_config_id):
     if device_config is not None:
         db.session.delete(device_config)
         db.session.commit()
-        return make_response(
-            "DeviceConfig {device_config_id} deleted".format(device_config_id=device_config_id), 200
-        )
-    # Otherwise, nope, didn't find that person
+        return make_response(f"DeviceConfig {device_config_id} deleted", 200)
     else:
-        abort(
-            404,
-            "Device not found for Id: {device_id}".format(device_config_id=device_config_id),
-        )
+        abort(404, f"Device not found for Id: {device_id}")

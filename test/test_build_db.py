@@ -2,7 +2,7 @@ import unittest
 from src.RemoteConfig import RemoteConfiguration
 
 
-class TestBuild_DB(unittest.TestCase):
+class TestBuildDB(unittest.TestCase):
 
     def test_process_ir_dir(self):
         remote_config = RemoteConfiguration()
@@ -46,6 +46,7 @@ class TestBuild_DB(unittest.TestCase):
         remote_config.process_ir_dir("../src/ir_dir")
         unique_remote_configs = remote_config.get_remote_control_configs()
         self.assertEqual(len(unique_remote_configs), 4)
+
 
 if __name__ == '__main__':
     unittest.main()

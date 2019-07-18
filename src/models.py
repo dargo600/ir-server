@@ -34,7 +34,7 @@ class DeviceConfig(db.Model):
 class RCButton(db.Model):
     __tablename__ = 'rc_button'
     rc_button_id = db.Column(db.Integer, primary_key=True)
-    device_config_id = db.Column(db.Integer, db.ForeignKey("device_config.device_config_id"))
+    device_config_id = db.Column(db.Integer)
     rc_type = db.Column(db.String, nullable=False)
     rc_ir_code = db.Column(db.String, nullable=False)
     timestamp = db.Column(

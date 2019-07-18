@@ -338,3 +338,168 @@ paths:
       responses:
         200:
           description: Successfully deleted a device config
+  /rc_buttons:
+    get:
+      operationId: rc_buttons.read_all
+      tags:
+        - rc_buttons
+      summary: Read the entire set of rc_buttons
+      description: Read the entire set of rc_buttons
+      responses:
+        200:
+          description: Successfully read rc_buttons set operation
+          schema:
+            type: array
+            items:
+              properties:
+                rc_button_id:
+                  type: integer
+                  description: Id of the RC button
+                device_config_id:
+                  type: integer
+                  description: Id of the device config
+                rc_type:
+                  type: string
+                  description: Type of remote control button
+                rc_ir_code:
+                  type: string
+                  description: RC pronto hex code for button
+                timestamp:
+                  type: string
+                  description: Creation/Update timestamp of the device config
+    post:
+      operationId: rc_buttons.create
+      tags:
+        - rc_buttons
+      summary: Create a rc button configuration
+      description: Create a new rc button configuration
+      parameters:
+        - name: rc button configuration
+          in: body
+          description: RC Button to create
+          required: True
+          schema:
+            type: object
+            properties:
+              device_config_id:
+                type: integer
+                description: Id of the device config
+              rc_type:
+                type: string
+                description: Type of remote control button
+              rc_ir_code:
+                type: string
+                description: RC pronto hex code for button
+              timestamp:
+                type: string
+                description: Timestamp of creation
+      responses:
+        201:
+          description: Successfully created device config
+          schema:
+            properties:
+              rc_button_id:
+                type: integer
+                description: Id of the rc_button
+              device_config_id:
+                  type: integer
+                  description: Id of the device config
+              rc_type:
+                  type: string
+                  description: Type of remote control button
+              rc_ir_code:
+                  type: string
+                  description: RC pronto hex code for button
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the device config record
+
+  /rc_buttons/{rc_button_id}:
+    get:
+      operationId: rc_buttons.read_one
+      tags:
+        - rc_buttons
+      summary: Read one rc_buttons config
+      description: Read one rc_buttons config
+      parameters:
+        - name: rc_button_id
+          in: path
+          description: Id of the rc_buttons to get
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read device config from device configs data operation
+          schema:
+            type: object
+            properties:
+              rc_button_id:
+                type: integer
+                description: Id of the rc_button
+              device_config_id:
+                  type: integer
+                  description: Id of the device config
+              rc_type:
+                  type: string
+                  description: Type of remote control button
+              rc_ir_code:
+                  type: string
+                  description: RC pronto hex code for button
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the rc_button record
+    put:
+      operationId: rc_buttons.update
+      tags:
+        - rc_buttons
+      summary: Update a rc_button configuration
+      description: Update a rc_button configuration
+      parameters:
+        - name: rc_button_id
+          in: path
+          description: Id the rc_button to update
+          type: integer
+          required: True
+        - name: rc_button
+          in: body
+          schema:
+            type: object
+            properties:
+              device_config_name:
+                type: string
+                description: Name of the rc_button configuration
+      responses:
+        200:
+          description: Successfully updated rc_button
+          schema:
+            properties:
+              rc_button_id:
+                type: integer
+                description: Id of the rc_button
+              device_config_id:
+                  type: integer
+                  description: Id of the device config
+              rc_type:
+                  type: string
+                  description: Type of remote control button
+              rc_ir_code:
+                  type: string
+                  description: RC pronto hex code for button
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the rc_button record
+    delete:
+      operationId: rc_buttons.delete
+      tags:
+        - rc_buttons
+      summary: Delete a rc_button from the rc_buttons list
+      description: Delete a rc_button
+      parameters:
+        - name: rc_button_id
+          in: path
+          type: integer
+          description: Id of the rc_button to delete
+          required: true
+      responses:
+        200:
+          description: Successfully deleted a rc_button
