@@ -10,14 +10,11 @@ from models import RCButton, RCButtonSchema
 
 def read_all():
     """
-    This function responds to a request for /api/rcbuttons
-    with the complete lists of rcbuttons
+    This function responds to a request for /api/rc_buttons
+    with the complete lists of rc_buttons
     :return:        json string of list of rc_buttons
     """
-    # Create the list of rc_buttons from our data
     rc_buttons = RCButton.query.order_by(RCButton.rc_button_id).all()
-
-    # Serialize the data for the response
     rc_button_schema = RCButtonSchema(many=True)
     data = rc_button_schema.dump(rc_buttons).data
     return data
@@ -33,9 +30,7 @@ def read_one(rc_button_id):
     rc_button = RCButton.query\
                         .filter(RCButton.rc_button_id == rc_button_id)\
                         .one_or_none()
-
     if rc_button is not None:
-        # Serialize the data for the response
         rc_button_schema = RCButtonSchema()
         data = rc_button_schema.dump(rc_button).data
         return data
@@ -52,13 +47,10 @@ def create(rc_button):
     """
     rc_button_type = rc_button.get("rc_type")
     device_config_id = rc_button.get("device_config_id")
-
     existing_rc_button = (
         RCButton.query.filter(RCButton.rc_type == rc_button_type)
         .filter(RCButton.device_config_id == device_config_id)
-        .one_or_none()
-    )
-
+        .one_or_none())
     if existing_rc_button is None:
         schema = RCButtonSchema()
         new_rc_button = schema.load(rc_button, session=db.session).data
@@ -81,13 +73,12 @@ def update(rc_button_id, rc_button):
     :return:            updated rc_button structure
     """
     update_rc_button = RCButton.query\
-                                .filter(RCButton.rc_button_id == rc_button_id)\
-                                .one_or_none()
+                               .filter(RCButton.rc_button_id == rc_button_id)\
+                               .one_or_none()
     if update_rc_button is not None:
         schema = RCButtonSchema()
         new_update = schema.load(rc_button, session=db.session).data
         new_update.rc_button_id = update_rc_button.rc_button_id
-        # merge the new object into the old and commit it to the db
         db.session.merge(new_update)
         db.session.commit()
         data = schema.dump(update_rc_button).data
@@ -102,7 +93,6 @@ def delete(rc_button_id):
     :param rc_button_id:   Id of the rc_button to delete
     :return:            200 on successful delete, 404 if not found
     """
-    # Get the rc_button requested
     rc_button = RCButton.query.filter(RCButton.rc_button_id == rc_button_id)\
                         .one_or_none()
     if rc_button is not None:

@@ -10,7 +10,7 @@ class Device(db.Model):
     eg.: Apple's ext/play seems to do something but not anything useful
     This could be done by adding something like:
     #supported_buttons = db.Column(db.String(32))
-    @todo determine how to make a relation between dbs
+    @todo would be nice todo a join between the db tables
     #device_config_id = db.Column(db.Integer, db.ForeignKey("device_config.device_config_id"))
     """
     __tablename__ = 'device'
@@ -19,7 +19,9 @@ class Device(db.Model):
     manufacturer = db.Column(db.String(32))
     device_type = db.Column(db.String(32))
     device_config_id = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    timestamp = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
 
 class DeviceConfig(db.Model):
