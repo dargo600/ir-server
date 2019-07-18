@@ -107,4 +107,4 @@ def delete(device_config_id):
         db.session.commit()
         return make_response(f"DeviceConfig {device_config_id} deleted", 200)
     else:
-        abort(404, f"Device not found for Id: {device_id}")
+        abort(404, f"Device not found for Id: {device_config_id}")
