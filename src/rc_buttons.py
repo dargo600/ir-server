@@ -28,8 +28,8 @@ def read_one(rc_button_id):
     :return:            rc_button matching id
     """
     rc_button = RCButton.query\
-                        .filter(RCButton.rc_button_id == rc_button_id)\
-                        .one_or_none()
+        .filter(RCButton.rc_button_id == rc_button_id)\
+        .one_or_none()
     if rc_button is not None:
         rc_button_schema = RCButtonSchema()
         data = rc_button_schema.dump(rc_button).data
@@ -47,10 +47,10 @@ def create(rc_button):
     """
     rc_button_type = rc_button.get("rc_type")
     device_config_id = rc_button.get("device_config_id")
-    existing_rc_button = (
-        RCButton.query.filter(RCButton.rc_type == rc_button_type)
-        .filter(RCButton.device_config_id == device_config_id)
-        .one_or_none())
+    existing_rc_button = RCButton.query\
+        .filter(RCButton.rc_type == rc_button_type)\
+        .filter(RCButton.device_config_id == device_config_id)\
+        .one_or_none()
     if existing_rc_button is None:
         schema = RCButtonSchema()
         new_rc_button = schema.load(rc_button, session=db.session).data
@@ -73,8 +73,8 @@ def update(rc_button_id, rc_button):
     :return:            updated rc_button structure
     """
     update_rc_button = RCButton.query\
-                               .filter(RCButton.rc_button_id == rc_button_id)\
-                               .one_or_none()
+        .filter(RCButton.rc_button_id == rc_button_id)\
+        .one_or_none()
     if update_rc_button is not None:
         schema = RCButtonSchema()
         new_update = schema.load(rc_button, session=db.session).data

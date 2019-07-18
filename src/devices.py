@@ -69,24 +69,24 @@ def update(device_id, device):
     :param device:      device to update
     :return:            updated device structure
     """
-    update_device = Device.query.filter(
-        Device.device_id == device_id).one_or_none()
+    update_device = Device.query\
+        .filter(Device.device_id == device_id).one_or_none()
     model_num = device.get("model_num")
     manufacturer = device.get("manufacturer")
-    existing_device = (
-        Device.query.filter(Device.model_num == model_num)
-        .filter(Device.manufacturer == manufacturer)
-        .one_or_none())
+    existing_device = Device.query\
+        .filter(Device.model_num == model_num)\
+        .filter(Device.manufacturer == manufacturer)\
+        .one_or_none()
     if update_device is None:
         abort(404, f"Device not found for Id: {device_id}")
-    elif (existing_device is not None and\
+    elif (existing_device is not None and
           existing_device.device_id != device_id):
         abort(409, f"Device {model_num} {manufacturer} exists already")
     else:
         schema = DeviceSchema()
-        update = schema.load(device, session=db.session).data
-        update.device_id = update_device.device_id
-        db.session.merge(update)
+        new_device = schema.load(device, session=db.session).data
+        new_device.device_id = update_device.device_id
+        db.session.merge(new_device)
         db.session.commit()
         data = schema.dump(update_device).data
         return data, 200

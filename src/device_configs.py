@@ -14,7 +14,9 @@ def read_all():
     with the complete lists of devices
     :return:        json string of list of devices
     """
-    device_configs = DeviceConfig.query.order_by(DeviceConfig.device_config_id).all()
+    device_configs = DeviceConfig.query\
+        .order_by(DeviceConfig.device_config_id)\
+        .all()
     device_config_schema = DeviceConfigSchema(many=True)
     data = device_config_schema.dump(device_configs).data
     return data
@@ -27,10 +29,9 @@ def read_one(device_config_id):
     :param device_config_id:   Id of device to find
     :return:            device matching id
     """
-    device_config =\
-        DeviceConfig.query\
-                    .filter(DeviceConfig.device_config_id == device_config_id)\
-                    .one_or_none()
+    device_config = DeviceConfig.query\
+        .filter(DeviceConfig.device_config_id == device_config_id)\
+        .one_or_none()
     if device_config is not None:
         device_config_schema = DeviceConfigSchema()
         data = device_config_schema.dump(device_config).data
@@ -47,12 +48,9 @@ def create(device_config):
     :return:        201 on success, 406 on device exists
     """
     device_config_name = device_config.get("device_config_name")
-    existing_device = (
-        DeviceConfig.query
-                    .filter(DeviceConfig.device_config_name == device_config_name)
-                    .one_or_none()
-    )
-
+    existing_device = DeviceConfig.query\
+        .filter(DeviceConfig.device_config_name == device_config_name)\
+        .one_or_none()
     if existing_device is None:
         schema = DeviceConfigSchema()
         new_device_config = schema.load(device_config, session=db.session).data
@@ -73,21 +71,17 @@ def update(device_config_id, device_config):
     :param device_config:      device to update
     :return:            updated device structure
     """
-    update_device_config = DeviceConfig.query.filter(
-        DeviceConfig.device_config_id == device_config_id
-    ).one_or_none()
+    update_device_config = DeviceConfig.query\
+        .filter(DeviceConfig.device_config_id == device_config_id)\
+        .one_or_none()
     device_config_name = device_config.get("device_config_name")
-    existing_device_config = (
-        DeviceConfig
-            .query
-            .filter(DeviceConfig.device_config_name, device_config_name)
-            .one_or_none()
-    )
+    existing_device_config = DeviceConfig.query\
+        .filter(DeviceConfig.device_config_name, device_config_name)\
+        .one_or_none()
     if update_device_config is None:
         abort(404, f"Device Config not found for Id: {device_config_id}")
-    elif (
-        existing_device_config is not None and existing_device_config.device_config_id != device_config_id
-    ):
+    elif (existing_device_config is not None and
+          existing_device_config.device_config_id != device_config_id):
         abort(409, f"Device {device_config_name} exists already")
     else:
         schema = DeviceConfigSchema()
@@ -105,11 +99,9 @@ def delete(device_config_id):
     :param device_config_id:   Id of the device to delete
     :return:            200 on successful delete, 404 if not found
     """
-    device_config = (
-        DeviceConfig.query
-                    .filter(DeviceConfig.device_config_id == device_config_id)
-                    .one_or_none()
-    )
+    device_config = DeviceConfig.query\
+        .filter(DeviceConfig.device_config_id == device_config_id)\
+        .one_or_none()
     if device_config is not None:
         db.session.delete(device_config)
         db.session.commit()
