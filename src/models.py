@@ -2,14 +2,10 @@ from datetime import datetime
 from config import db, ma
 from marshmallow import fields
 
-class Device(db.Model):
-    """ Database associated with the Remote Device Creation
 
-    It may be worth while to prevent certain buttons that are in the csv
-    files from being used as they may or may not be used or work.
-    eg.: Apple's ext/play seems to do something but not anything useful
-    This could be done by adding something like:
-    #supported_buttons = db.Column(db.String(32))
+class Device(db.Model):
+    """
+    Database associated with the Remote Device Creation
     """
     __tablename__ = 'device'
     device_id = db.Column(db.Integer, primary_key=True)
@@ -53,6 +49,7 @@ class DeviceSchema(ma.ModelSchema):
     class Meta:
         model = Device
         sqla_session = db.session
+
     device_config = fields.Nested("DeviceDeviceConfigSchema", default=[], many=True)
 
 
@@ -89,9 +86,11 @@ class DeviceDeviceConfigSchema(ma.ModelSchema):
 class DeviceConfigSchema(ma.ModelSchema):
     def __init__(self, **kwargs):
         super().__init__(strict=True, **kwargs)
+
     class Meta:
         model = DeviceConfig
         sqla_session = db.session
+
     buttons = fields.Nested("DeviceConfigButtonSchema", default=[], many=True)
 
 
@@ -103,12 +102,10 @@ class DeviceConfigButtonSchema(ma.ModelSchema):
     def __init__(self, **kwargs):
         super().__init__(strict=True, **kwargs)
 
-    device_config_id = fields.Int()
-    rc_button_id = fields.Int()
-    rc_button_type = fields.Str()
     device_config_name = fields.Str()
+    rc_type = fields.Str()
     rc_ir_code = fields.Str()
-    timestamp = fields.Str()
+
 
 class RCButtonSchema(ma.ModelSchema):
     class Meta:

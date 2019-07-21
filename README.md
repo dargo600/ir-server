@@ -12,6 +12,11 @@ docker-compose up
 * http://localhost:5000 - alter database
 * http://localhost:5000/api/ui - to access swagger interface
 
+## Todo:
+- add a field for buttons that don't work?
+- add more devices
+- add more tests
+
 ## Usage
 
 All responses will have the form
@@ -25,6 +30,53 @@ All responses will have the form
 
 Subsequent definitions will only detail the expected value of the data field"
 
+### List of all Device Configs
+
+
+**Definitions**
+
+`GET /device_configs`
+
+**Response**
+- `200 OK` on success
+
+```json
+[
+  {
+    "buttons": [
+      {
+        "rc_ir_code": "0000 006E 0022 0002 0155 00AC 0015 0015 0015 0041 0015 0041 0015 0041 0015 0015 0015 0041 0015 0041 0015 0041 0015 0041 0015 0041 0015 0041 0015 0015 0015 0015 0015 0015 0015 0015 0015 0041 0015 0041 0015 0041 0015 0015 0015 0041 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0041 0015 0041 0015 0015 0015 05E6 0155 0056 0015 0E45",
+        "rc_type": "up"
+      },
+      {
+        "rc_ir_code": "0000 006E 0022 0002 0156 00AC 0015 0015 0015 0041 0015 0041 0015 0041 0015 0015 0015 0041 0015 0041 0015 0041 0015 0041 0015 0041 0015 0041 0015 0015 0015 0015 0015 0015 0015 0015 0015 0041 0015 0041 0015 0015 0015 0041 0015 0041 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0041 0015 0041 0015 0015 0015 05E6 0156 0056 0015 0E45",
+        "rc_type": "down"
+      }
+    ],
+    "device": 1,
+    "device_config_id": 1,
+    "device_config_name": "appleConfig1",
+    "timestamp": "2019-07-21T14:44:22.215650+00:00"
+  },
+  {
+    "buttons": [
+      {
+        "rc_ir_code": "0000 006C 0000 0027 00AC 00AC 0013 0013 0013 0013 0013 0013 0013 0013 0013 003A 0013 003A 0013 0013 0013 0013 0013 003A 0013 003A 0013 003A 0013 003A 0013 0013 0013 0013 0013 0013 0013 0013 0013 00AC 0013 0013 0013 0013 0013 0013 0013 0013 0013 003A 0013 003A 0013 003A 0013 0013 0013 003A 0013 003A 0013 003A 0013 0013 0013 0013 0013 0013 0013 0013 0013 003A 0013 0013 0013 0013 0013 0013 0013 003A 0013 0856",
+        "rc_type": "volup"
+      },
+      {
+        "rc_ir_code": "0000 006C 0000 0027 00AC 00AC 0013 0013 0013 0013 0013 0013 0013 0013 0013 003A 0013 003A 0013 0013 0013 0013 0013 003A 0013 003A 0013 003A 0013 003A 0013 0013 0013 0013 0013 0013 0013 0013 0013 00AC 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 0013 003A 0013 003A 0013 003A 0013 0013 0013 003A 0013 003A 0013 003A 0013 003A 0013 0013 0013 0013 0013 0013 0013 003A 0013 0856",
+        "rc_type": "power"
+      }
+    ],
+    "device": null,
+    "device_config_id": 2,
+    "device_config_name": "samsungConfig2",
+    "timestamp": "2019-07-21T14:44:22.222443+00:00"
+  }
+]
+```
+
 ### List of all Devices
 
 
@@ -36,20 +88,50 @@ Subsequent definitions will only detail the expected value of the data field"
 - `200 OK` on success
 
 ```json
-{
+[
   {
-    "model_num": "ln46C630k1fkxzc",
-    "manufacturer": "samsung",
-    "device_type": "tv",
-    "remote_config": "samsungConfig1"
-  },
-  {
-    "model_num": "v2",
+    "device_config": [
+      {
+        "device_config_id": 1,
+        "device_id": 1,
+        "timestamp": "2019-07-21 14:44:22.215650"
+      }
+    ],
+    "device_id": 1,
+    "device_type": "MediaDevice",
     "manufacturer": "apple",
-    "device_type": "apple-tv",
-    "remote_config": "appleTVConfig1" 
+    "model_num": "v2",
+    "timestamp": "2019-07-21T14:44:22.195630+00:00"
   },
-}
+  {
+    "device_config": [
+      {
+        "device_config_id": 4,
+        "device_id": 2,
+        "timestamp": "2019-07-21 14:44:22.227126"
+      }
+    ],
+    "device_id": 2,
+    "device_type": "MediaDevice",
+    "manufacturer": "roku",
+    "model_num": "streamstick",
+    "timestamp": "2019-07-21T14:44:22.207500+00:00"
+  },
+  {
+    "device_config": [
+      {
+        "device_config_id": 3,
+        "device_id": 3,
+        "timestamp": "2019-07-21 14:44:22.225033"
+      }
+    ],
+    "device_id": 3,
+    "device_type": "tv",
+    "manufacturer": "samsung",
+    "model_num": "ln46C630k1fkxzc",
+    "timestamp": "2019-07-21T14:44:22.211588+00:00"
+  }
+]
 ```
 
 ### Registering a new device

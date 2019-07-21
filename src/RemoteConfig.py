@@ -81,7 +81,7 @@ class RemoteConfiguration:
             csv_reader = csv.reader(csv_file, delimiter=',')
             header_type = "undefined"
             for row in csv_reader:
-                if row[0].startswith("#"):
+                if self.is_comment(row):
                     continue
                 if header_type == "undefined":
                     header_type = self.parse_header(row, rel_csv_file)
@@ -89,6 +89,10 @@ class RemoteConfiguration:
                         break
                 else:
                     self.parse_line(row, header_type)
+
+    @staticmethod
+    def is_comment(row):
+        return row[0].startswith("#")
 
     def parse_header(self, row, rel_csv_file):
         header_column = row[0]
