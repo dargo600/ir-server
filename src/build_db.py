@@ -13,27 +13,25 @@ if os.path.exists(devices_db):
 db.create_all()
 remote_config = RemoteConfiguration()
 remote_config.process_ir_dir(ir_config_dir)
+device_configs = remote_config.get_device_configs()
 
-rc_configs = remote_config.get_remote_control_configs()
-for key,value in rc_configs.items():
-    p = DeviceConfig(device_config_id=value,
-                     device_config_name=key)
+added_configs = {}
+for key, parsed_config in device_configs.items():
+    p = DeviceConfig(device_config_name=key)
+    buttons = parsed_config.get_buttons()
+    for button in buttons:
+        p.buttons.append(RCButton(rc_type=button.button_type,
+                                  rc_ir_code=button.pronto_code))
     db.session.add(p)
+    added_configs[key] = p
 
-rc_buttons = remote_config.get_rc_buttons()
-for button in rc_buttons:
-    p = RCButton(device_config_id=button.config_index,
-                 rc_type=button.button_type,
-                 rc_ir_code=button.pronto_code)
-    db.session.add(p)
-
-devices = remote_config.get_device_configs()
-# Iterate over the DEVICES structure and populate the database
+devices = remote_config.get_devices()
 for device in devices:
+    device_config = added_configs[device.remote_config]
     p = Device(model_num=device.model_num,
                manufacturer=device.manufacturer,
-               device_type=device.device_type,
-               device_config_id=rc_configs[device.remote_config])
+               device_type=device.device_type)
+    p.device_config.append(device_config)
     db.session.add(p)
 
 

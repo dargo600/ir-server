@@ -7,7 +7,7 @@ class TestBuildDB(unittest.TestCase):
     def test_process_ir_dir(self):
         remote_config = RemoteConfiguration()
         remote_config.process_ir_dir("../src/ir_dir")
-        buttons = remote_config.get_rc_buttons()
+        buttons = remote_config.get_device_configs()
         self.assertTrue(len(buttons) != 0)
 
     def test_get_csv_files(self):
@@ -28,25 +28,20 @@ class TestBuildDB(unittest.TestCase):
     def test_process_ir_dir_pronto_begins_with_zero(self):
         remote_config = RemoteConfiguration()
         remote_config.process_ir_dir("../src/ir_dir")
-        buttons = remote_config.get_rc_buttons()
-        self.assertTrue(len(buttons) != 0)
-        for button in buttons:
-            self.assertTrue(button.pronto_code.startswith("0000"))
+        configs = remote_config.get_device_configs()
+        self.assertTrue(len(configs) != 0)
+        for key, config in configs.items():
+            buttons = config.get_buttons()
+            for button in buttons:
+                self.assertTrue(button.pronto_code.startswith("0000"))
 
     def test_process_ir_dir_sets_samsung_tv_correctly(self):
         remote_config = RemoteConfiguration()
         remote_config.process_ir_dir("../src/ir_dir")
-        device_configs = remote_config.get_device_configs()
-        for config in device_configs:
-            if config.model_num == "ln46C630k1fkxzc":
-                self.assertEqual(config.remote_config, "samsungConfig1")
-
-    def test_process_ir_dir_get_remote_control_configs(self):
-        remote_config = RemoteConfiguration()
-        remote_config.process_ir_dir("../src/ir_dir")
-        unique_remote_configs = remote_config.get_remote_control_configs()
-        self.assertEqual(len(unique_remote_configs), 4)
-
+        devices = remote_config.get_devices()
+        for device in devices:
+            if device.model_num == "ln46C630k1fkxzc":
+                self.assertEqual(device.remote_config, "samsungConfig1")
 
 if __name__ == '__main__':
     unittest.main()
