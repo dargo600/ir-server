@@ -39,9 +39,13 @@ class TestBuildDB(unittest.TestCase):
         remote_config = RemoteConfiguration()
         remote_config.process_ir_dir("../src/ir_dir")
         devices = remote_config.get_devices()
-        for device in devices:
-            if device.model_num == "ln46C630k1fkxzc":
-                self.assertEqual(device.remote_config, "samsungConfig1")
+        found = False
+        for key, cur_devices in devices.items():
+            if key == "samsungConfig1":
+                for device in cur_devices:
+                    if "ln46C630k1fkxzc" == device.model_num:
+                        found = True
+        self.assertTrue(found)
 
 if __name__ == '__main__':
     unittest.main()

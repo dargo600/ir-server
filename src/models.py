@@ -3,31 +3,21 @@ from config import db, ma
 from marshmallow import fields
 
 
-class Device(db.Model):
-    """
-    Database associated with the Remote Device Creation
-    """
-    __tablename__ = 'device'
-    device_id = db.Column(db.Integer, primary_key=True)
-    model_num = db.Column(db.String(32))
-    manufacturer = db.Column(db.String(32))
-    device_type = db.Column(db.String(32))
-    device_config = db.relationship("DeviceConfig",backref="device")
-    timestamp = db.Column(
-        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
-
-
 class DeviceConfig(db.Model):
     __tablename__ = 'device_config'
     device_config_id = db.Column(db.Integer, primary_key=True)
     device_config_name = db.Column(db.String(32))
-    device_id = db.Column(db.Integer, db.ForeignKey("device.device_id"))
     buttons = db.relationship(
         "RCButton",
         backref="device_config",
         single_parent=True,
         order_by="desc(RCButton.rc_type)",
+    )
+    devices = db.relationship(
+        "Device",
+        backref="device_config",
+        single_parent=True,
+        order_by="desc(Device.model_num)",
     )
     timestamp = db.Column(
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
@@ -45,42 +35,31 @@ class RCButton(db.Model):
     )
 
 
+class Device(db.Model):
+    """
+    Database associated with the Remote Device Creation
+    """
+    __tablename__ = 'device'
+    device_id = db.Column(db.Integer, primary_key=True)
+    model_num = db.Column(db.String(32))
+    manufacturer = db.Column(db.String(32))
+    device_type = db.Column(db.String(32))
+    device_config_id = db.Column(db.Integer, db.ForeignKey("device_config.device_config_id"))
+    timestamp = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+
 class DeviceSchema(ma.ModelSchema):
     class Meta:
         model = Device
         sqla_session = db.session
 
-    device_config = fields.Nested("DeviceDeviceConfigSchema", default=[], many=True)
 
-
-class DeviceButtonSchema(ma.ModelSchema):
-    """
-    This class exists to get around a recursion issue
-    """
-    def __init__(self, **kwargs):
-        super().__init__(strict=True, **kwargs)
-
-    device_config_id = fields.Int()
-    device_config_name = fields.Str()
-    device_id = fields.Int()
-    rc_button_id = fields.Int()
-    rc_type = fields.Str()
-    rc_ir_code = fields.Str()
-
-
-class DeviceDeviceConfigSchema(ma.ModelSchema):
-    """
-    This class exists to get around a recursion issue
-    """
-    def __init__(self, **kwargs):
-        super().__init__(strict=True, **kwargs)
-
-    rc_button_id = fields.Int()
-    rc_type = fields.Str()
-    rc_ir_code = fields.Str()
-    device_id = fields.Int()
-    device_config_id = fields.Int()
-    timestamp = fields.Str()
+class RCButtonSchema(ma.ModelSchema):
+    class Meta:
+        model = RCButton
+        sqla_session = db.session
 
 
 class DeviceConfigSchema(ma.ModelSchema):
@@ -92,6 +71,7 @@ class DeviceConfigSchema(ma.ModelSchema):
         sqla_session = db.session
 
     buttons = fields.Nested("DeviceConfigButtonSchema", default=[], many=True)
+    devices = fields.Nested("DeviceConfigDeviceSchema", default=[], many=True)
 
 
 class DeviceConfigButtonSchema(ma.ModelSchema):
@@ -107,8 +87,17 @@ class DeviceConfigButtonSchema(ma.ModelSchema):
     rc_ir_code = fields.Str()
 
 
-class RCButtonSchema(ma.ModelSchema):
-    class Meta:
-        model = RCButton
-        sqla_session = db.session
+class DeviceConfigDeviceSchema(ma.ModelSchema):
+    """
+    This class exists to get around a recursion issue
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(strict=True, **kwargs)
+
+    device_config_name = fields.Str()
+    device_id = fields.Int()
+    model_num = fields.Str()
+    manufacturer = fields.Str()
+    device_type = fields.Str()
 

@@ -22,12 +22,19 @@ class ParsedDeviceConfig:
         self.device_config_index = device_config_index
         self.name = name
         self.rc_buttons = []
+        self.devices = []
 
     def add_button(self, rc_button):
         self.rc_buttons.append(rc_button)
 
+    def add_device(self, device):
+        self.devices.append(device)
+
     def get_buttons(self):
         return self.rc_buttons
+
+    def get_devices(self):
+        return self.devices
 
 
 class ParsedDevice:
@@ -41,6 +48,9 @@ class ParsedDevice:
         self.device_type = device_type
         self.remote_config = remote_config
 
+    def get_remote_config_name(self):
+        return self.remote_config
+
 
 class RemoteConfiguration:
     """
@@ -51,7 +61,7 @@ class RemoteConfiguration:
         self.config_index = 0
         self.device_configs = {}
         self.device_config = None
-        self.devices = []
+        self.devices = {}
 
     def get_device_configs(self):
         return self.device_configs
@@ -129,7 +139,13 @@ class RemoteConfiguration:
 
     def parse_device_line(self, row):
         model_num, manufacturer, device_type, remote_config = row
+        config_name = remote_config.strip()
         device = ParsedDevice(model_num, manufacturer.strip(),
-                              device_type.strip(), remote_config.strip())
-        self.devices.append(device)
+                              device_type.strip(), config_name)
+        if config_name not in self.devices:
+            print(f'Creating hash for {config_name}')
+            self.devices[config_name] = []
+        print(f'Adding {model_num} to {config_name}')
+        cur_hash = self.devices[config_name]
+        cur_hash.append(device)
 
